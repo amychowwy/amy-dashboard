@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com; base-uri 'self'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Amy 帳簿">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <title>Amy 帳簿</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <!-- 第一次開 / 登出後：輸入 URL 同 key -->
+  <section id="setup" class="setup" hidden>
+    <div class="setup-inner">
+      <img src="icons/apple-touch-icon.png" class="setup-icon" alt="" width="72" height="72">
+      <h1>Amy 帳簿</h1>
+      <p class="muted">請輸入 Google Apps Script Web App 嘅 URL 同你嘅 key</p>
+      <form id="setupForm" class="card form" novalidate>
+        <label>Web App URL
+          <input id="setupUrl" type="url" inputmode="url" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="https://script.google.com/macros/s/…/exec">
+        </label>
+        <label>Key
+          <input id="setupKey" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        </label>
+        <p id="setupMsg" class="msg" role="alert"></p>
+        <button type="submit" class="btn primary" id="setupBtn">登入</button>
+      </form>
+      <a href="?demo" class="link">睇 demo（虛構數據）</a>
+    </div>
+  </section>
+
+  <!-- 主畫面 -->
+  <div id="app" hidden>
+    <header id="top" class="top">
+      <div class="bar">
+        <button id="btnRefresh" class="icon-btn" type="button" aria-label="重新整理">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>
+        </button>
+        <div class="month">
+          <button id="prevMonth" class="icon-btn" type="button" aria-label="上個月">‹</button>
+          <span id="monthLabel" class="month-label"></span>
+          <button id="nextMonth" class="icon-btn" type="button" aria-label="下個月">›</button>
+        </div>
+        <button id="btnSettings" class="icon-btn" type="button" aria-label="設定">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
+      <div id="status" class="status" aria-live="polite"></div>
+      <div id="tabs" class="seg" role="tablist" hidden>
+        <button type="button" role="tab" data-tab="personal">個人</button>
+        <button type="button" role="tab" data-tab="household">屋企</button>
+      </div>
+    </header>
+
+    <div id="ptr" class="ptr" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>
+    </div>
+
+    <main id="content" class="content"></main>
+  </div>
+
+  <!-- 設定 sheet -->
+  <div id="sheet" class="sheet" hidden>
+    <div class="sheet-backdrop" data-close></div>
+    <div class="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-head">
+        <h2 id="sheetTitle">設定</h2>
+        <button type="button" class="text-btn" data-close>完成</button>
+      </div>
+      <p id="sheetDemo" class="note" hidden>而家係 demo 模式，所有數據都係虛構。<a href="./">離開 demo</a></p>
+      <form id="settingsForm" class="card form" novalidate>
+        <div class="info-row"><span>身份</span><b id="roleLabel">—</b></div>
+        <label>Web App URL
+          <input id="setUrl" type="url" inputmode="url" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+        </label>
+        <label>換 key
+          <input id="setKey" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="留空就唔改">
+        </label>
+        <p id="setMsg" class="msg" role="alert"></p>
+        <button type="submit" class="btn primary">儲存並重新載入</button>
+      </form>
+      <button type="button" id="btnLogout" class="btn danger">登出</button>
+      <p class="fine">登出或者換 key / URL 會清走所有 cache。外觀跟系統 light / dark mode。</p>
+    </div>
+  </div>
+
+</body>
+</html>

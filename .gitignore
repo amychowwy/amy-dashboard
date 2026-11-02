@@ -1,0 +1,9 @@
+# 唔好將任何 key、真實數據、設定檔 push 上去
+*.local
+*.local.*
+.env*
+secrets*
+data/
+.claude/
+.DS_Store
+Thumbs.db
