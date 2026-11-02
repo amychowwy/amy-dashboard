@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFB3C1"/>
+      <stop offset="1" stop-color="#FF8FA3"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- 錢幣 -->
+  <ellipse cx="256" cy="398" rx="120" ry="16" fill="#E86F86" opacity=".35"/>
+  <circle cx="256" cy="256" r="150" fill="#FFFFFF"/>
+  <circle cx="256" cy="256" r="126" fill="none" stroke="#6B9BFF" stroke-width="9" opacity=".45"/>
+  <!-- 貓掌 -->
+  <g fill="#FF8FA3">
+    <path d="M256 250c-34 0-70 34-70 64 0 22 18 32 38 32 13 0 22-6 32-6s19 6 32 6c20 0 38-10 38-32 0-30-36-64-70-64z"/>
+    <ellipse cx="189" cy="226" rx="21" ry="27" transform="rotate(-22 189 226)"/>
+    <ellipse cx="231" cy="187" rx="21" ry="28" transform="rotate(-6 231 187)"/>
+    <ellipse cx="281" cy="187" rx="21" ry="28" transform="rotate(6 281 187)"/>
+    <ellipse cx="323" cy="226" rx="21" ry="27" transform="rotate(22 323 226)"/>
+  </g>
+</svg>
